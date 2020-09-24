@@ -1,26 +1,35 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Switch, withRouter } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { ConfigProvider } from 'antd';
 
-function App() {
+import { routeConfig } from 'configs/route';
+import { getLocale } from 'configs/locale';
+import { PublicRoute } from 'shared/components/Route/PublicRoute';
+import { PrivateRoute } from 'shared/components/Route/PrivateRoute';
+
+import Master from 'pages/Master';
+import Login from 'pages/Login';
+import SignUp from 'pages/SignUp';
+import Logout from 'pages/Logout';
+
+import 'assets/scss/main.scss';
+
+const App = () => {
+  const locale = useSelector((state) => state.config.locale);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <ConfigProvider locale={getLocale(locale)}>
+        <Switch>
+          <PublicRoute exact path={routeConfig.SIGNUP} component={SignUp} />
+          <PublicRoute exact path={routeConfig.LOGIN} component={Login} />
+          <PrivateRoute exact path={routeConfig.LOGOUT} component={Logout} />
+          <PrivateRoute path='/' component={Master} />
+        </Switch>
+      </ConfigProvider>
+    </>
   );
-}
+};
 
-export default App;
+export default withRouter(App);
